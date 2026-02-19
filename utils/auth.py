@@ -9,6 +9,16 @@ def jwt_required():
     def wrapper(fn):
         @wraps(fn)
         def decorated(*args, **kwargs):
+            # --- Mock Auth Mode ---
+            from config import MODE
+            mock_user_id = request.headers.get("X-Mock-User-ID")
+            if MODE == "development" and mock_user_id:
+                user = User.query.filter_by(line_id=mock_user_id).first()
+                if user:
+                    request.user = user
+                    return fn(*args, **kwargs)
+            # ----------------------
+
             token = request.headers.get("Authorization", "").replace("Bearer ", "")
             try:
                 payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
