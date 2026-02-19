@@ -1,0 +1,46 @@
+[project]
+name = "linebot-training-backend"
+version = "0.1.0"
+description = "Line Bot Training Backend (Flask)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "flask>=3.0.0",
+    "flask-cors>=4.0.0",
+    "flask-sqlalchemy>=3.0.0",
+    "line-bot-sdk>=3.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
+
+[tool.pyright]
+include = ["."]
+exclude = ["**/__pycache__", "**/node_modules", "**/venv", "**/.venv"]
+venvPath = "."
+venv = ".venv"
+typeCheckingMode = "basic"
+
+[tool.poe.tasks]
+start = "python app.py"
+dev = "python app.py"
+setup = "pip install -r requirements.txt"

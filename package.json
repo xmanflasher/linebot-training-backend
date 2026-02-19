@@ -1,0 +1,13 @@
+{
+  "name": "linebot-training-backend",
+  "version": "0.1.0",
+  "description": "Line Bot Training Backend (Flask)",
+  "scripts": {
+    "start": "poe start",
+    "dev": "poe dev",
+    "setup": "poe setup"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
