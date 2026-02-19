@@ -85,11 +85,29 @@ erDiagram
         string line_id
         string display_name
         string role "member/admin"
+        string gender
+        string character
+        string picture_url
+        boolean is_active
     }
     TEAM {
         string id
         string name
         string join_code
+        string location
+        string description
+        boolean is_public
         datetime created_at
+    }
+    EVENT {
+        string id
+        string type "practice/match"
+        string title
+        datetime date
+        string location
+        string participants
+        string group_name
+        string weather
+        string notes
     }
 ```

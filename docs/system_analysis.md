@@ -21,9 +21,11 @@
 ├── config.py             # 環境變數與全域配置
 ├── requirements.txt      # Python 依賴清單
 ├── docs/                 # 系統文件 (本文件所在地)
-├── models/               # 資料庫模型 (User, Team)
-├── routes/               # API 路由 (linebot_routes, team_routes, test_routes)
-└── utils/                # 工具函式 (auth 驗證等)
+├── models/               # 資料庫模型 (User, Team, Event, Database)
+├── repositories/         # 資料存取層 (Repository Pattern)
+├── routes/               # API 路由 (team, user, event, linebot)
+├── utils/                # 工具函式 (auth, mock_data)
+└── verify_*.py           # 驗證與測試腳本
 ```
 
 ### 前端 (Frontend) - `linebot-training-frontend`
@@ -43,11 +45,24 @@
 ## 3. 介面設計 (Interface Design)
 
 ### 後端 API 介面
+
+#### System
 - `POST /callback`：LINE Webhook 接收點。
-- `POST /teams/create`：建立新團隊 (需 JWT)。
-- `POST /teams/<id>/join`：成員加入團隊 (需 JWT)。
-- `GET /teams/all`：獲取所有團隊列表。
 - `GET /`：確認後端運行狀態。
+
+#### Team
+- `POST /api/teams/create`：建立新團隊 (需 JWT)。
+- `POST /api/teams/<id>/join`：成員加入團隊 (需 JWT)。
+- `GET /api/teams`：獲取所有團隊列表。
+- `GET /api/teams/<id>`：獲取單一團隊資訊。
+- `GET /api/teams/search`：搜尋團隊 (Query param: `inviteCode`)。
+
+#### User
+- `GET /api/users/<userId>`：獲取使用者個人資料 (含所屬團隊)。
+
+#### Event
+- `GET /api/events`：獲取活動/練習列表。
+- `GET /api/events/<event_id>`：獲取活動詳情。
 
 ### 前端 LIFF 介面功能
 - **練習管理**：發起新練習、查看練習清單。
