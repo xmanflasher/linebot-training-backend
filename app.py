@@ -7,6 +7,7 @@ from routes.team_routes import team_bp
 from routes.user_routes import user_bp
 from routes.test_routes import test_bp
 from routes.event_routes import event_bp
+from routes.auth_routes import auth_bp
 from utils.mock_data import init_mock_data
 import os
 
@@ -34,6 +35,7 @@ if MODE == "development":
     app.register_blueprint(team_bp, url_prefix="/api")
     app.register_blueprint(user_bp, url_prefix="/api")
     app.register_blueprint(event_bp, url_prefix="/api")
+    app.register_blueprint(auth_bp, url_prefix="/api")
 if MODE in ["development", "production"]:
     app.register_blueprint(linebot_bp)  # 正式 LINE Bot webhook
 
