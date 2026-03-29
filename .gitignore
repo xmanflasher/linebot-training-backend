@@ -198,3 +198,8 @@ data.db
 
 # VS Code
 .vscode/
+
+# Security & Temp
+*.diff
+firebase/*.json
+EOF
