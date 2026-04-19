@@ -18,10 +18,6 @@ def get_user_profile(userId):
         "line_id": user.line_id,
         "display_name": user.display_name,
         "role": user.role,
-        "team_id": user.team_id,
-        "team_ids": [user.team_id] if user.team_id else [],  # 新增：相容前端複數欄位
-        "gender": user.gender,
-        "character": user.character,
-        "picture_url": user.picture_url,
-        "is_active": user.is_active
+        "subscription": user.subscription,
+        "team_ids": [ut.team_id for ut in user.user_teams]
     })

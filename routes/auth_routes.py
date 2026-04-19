@@ -42,5 +42,6 @@ def login():
         "line_id": user.line_id,
         "display_name": user.display_name,
         "role": user.role,
-        "team_id": user.team_id
+        "subscription": user.subscription,
+        "team_ids": [ut.team_id for ut in user.user_teams]
     })

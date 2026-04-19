@@ -12,36 +12,51 @@ def create_team():
     data = request.get_json()
     user = get_current_user()
 
-    if user.team_id:
-        return jsonify({"message": "已加入團隊"}), 400
+    from utils.quota import check_user_quota
+    is_allowed, msg = check_user_quota(user, action_type="create")
+    if not is_allowed:
+        return jsonify({"message": msg}), 402  # Payment Required context (or 403)
 
     team = TeamRepository.create(name=data["name"])
     
-    # Update user - since User model is imported in TeamRepository but not here for mutation, 
-    # we might need UserRepository or just update the object.
-    # To keep it consistent, let's use UserRepository later or just update the user object.
     from models.database import db
-    user.team_id = team.id
-    user.role = "admin"
+    from models.user_team import UserTeam
+    user_team = UserTeam(user_id=user.id, team_id=team.id, role="coach")
+    db.session.add(user_team)
     db.session.commit()
     
-    return jsonify({"message": "團隊已創建"})
+    return jsonify({
+        "message": "團隊已創建",
+        "team": {
+            "id": team.id,
+            "name": team.name
+        }
+    })
 
 
 @team_bp.route("/teams/<team_id>/join", methods=["POST"])
 @jwt_required()
 def join_team(team_id):
     user = get_current_user()
-    if user.team_id:
-        return jsonify({"message": "已加入團隊"}), 400
+    from models.user_team import UserTeam
+    
+    # 檢查是否已在隊伍中
+    is_joined = any(ut.team_id == team_id for ut in user.user_teams)
+    if is_joined:
+        return jsonify({"message": "已在團隊中"}), 400
+
+    from utils.quota import check_user_quota
+    is_allowed, msg = check_user_quota(user, action_type="join")
+    if not is_allowed:
+        return jsonify({"message": msg}), 402
 
     team = TeamRepository.get_by_id(team_id)
     if not team:
         return jsonify({"message": "團隊不存在"}), 404
 
     from models.database import db
-    user.team_id = team.id
-    user.role = "member"
+    user_team = UserTeam(user_id=user.id, team_id=team.id, role="member")
+    db.session.add(user_team)
     db.session.commit()
     return jsonify({"message": "已加入團隊"})
 
