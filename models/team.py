@@ -1,4 +1,5 @@
 from .database import db
+from .user_team import UserTeam
 import uuid
 
 class Team(db.Model):
@@ -11,3 +12,6 @@ class Team(db.Model):
     description = db.Column(db.String(255))
     is_public = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
+    
+    # 多對多關係
+    user_teams = db.relationship("UserTeam", back_populates="team", cascade="all, delete-orphan")

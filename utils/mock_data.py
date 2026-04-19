@@ -1,12 +1,14 @@
 from models.database import db
 from models.user import User
 from models.team import Team
+from models.user_team import UserTeam
 from models.event import Event
 from datetime import datetime
 
 def init_mock_data():
     # 由於 Schema 變更，我們先嘗試清空資料
     try:
+        db.session.query(UserTeam).delete()
         db.session.query(User).delete()
         db.session.query(Team).delete()
         db.session.query(Event).delete()
@@ -82,13 +84,18 @@ def init_mock_data():
         user = User(
             line_id=u["id"],
             display_name=u["name"],
-            team_id=u["teams"][0] if u["teams"] else None,
             role=u["role"],
             gender=u["gender"],
             character=u["char"],
             is_active=True
         )
         db.session.add(user)
+        db.session.flush() # 取得 user.id
+        
+        # 建立 UserTeam 關係
+        for t_id in u["teams"]:
+            ut = UserTeam(user_id=user.id, team_id=t_id, role="coach" if u["role"] == "admin" else "member")
+            db.session.add(ut)
 
     # Events Data (from mockEventData.js)
     events = [
